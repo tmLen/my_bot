@@ -1,23 +1,28 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, RegexHandler
 
-PROXY = {'proxy_url': 'socks5://en.socksy.seriyps.ru:7777', 'urllib3_proxy_kwargs': {'username': 'tg-tmlen', 'password': 'q1n5spUC'}}
+import handlers
+import settings
+
+
+PROXY = {'proxy_url': settings.proxy_url, 'urllib3_proxy_kwargs': {'username': settings.username, 'password': settings.password}}
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s', level=logging.INFO, filename='bot.log')
 
-
-#function thet greets user and explain about what is this bot
-def greet_user(bot, update):
-    greet = 'Привет,' + update.message.chat.first_name + '\n'
-    update.message.reply_text(greet)
 
 def main():
 
     mybot = Updater('750789173:AAGVvB-vFBIl66gsYLqnbzUqSVP1fh9bphM', request_kwargs=PROXY)
     dp = mybot.dispatcher
 
-    dp.add_handler(CommandHandler('start', greet_user))
+    dp.add_handler(CommandHandler('start', handlers.greet_user))
+    # dp.add_handler(RegexHandler('^(Прислать изображение)$', handlers.send_picture))
+    # dp.add_handler(RegexHandler('^(Прислать текст)$', handlers.send_text))
+    # dp.add_handler(CommandHandler('pic', handlers.send_picture))
+    # dp.add_handler(MessageHandler(Filters.contact, handlers.get_contact, pass_user_data=True))
+    # dp.add_handler(MessageHandler(Filters.location, handlers.get_location, pass_user_data=True))
+    # dp.add_handler(MessageHandler(Filters.text, handlers.talk_to_me, pass_user_data=True))
+
     mybot.start_polling()
     mybot.idle()
-
 if __name__ == '__main__':
     main()
